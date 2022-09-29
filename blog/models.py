@@ -13,3 +13,6 @@ class Post(models.Model):
     # pk는 자동으로 만들어짐
     def __str__(self):
         return f'[{self.pk}]{self.title}     {self.created_at}'
+
+    def get_absolute_url(self):
+        return f'/blog/{self.pk}/'       # 블로그 게시물의 url
