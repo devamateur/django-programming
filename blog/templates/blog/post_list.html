@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Blog</h1>
-    {% for p in posts %}
+    {% for p in post_list %}
         <!-- models.py에서 선언한 get_absolute_url -->
         <h2> <a href="{{p.get_absolute_url}}">{{ p.title }}</a> </h2>
         <h3>{{ p.created_at }}</h3>
