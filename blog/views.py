@@ -9,10 +9,11 @@ class PostList(ListView):
     model = Post
     ordering = '-pk'   # pk로 내림차순으로 정렬(최신순)
     # 템플릿은 모델명_list.html이 자동으로 불려짐 -> post_list.html
+    # 전달되는 매개변수(FBV render() 세 번째 매개변수): 모델명_list -> post_list
 class PostDetail(DetailView):
     model = Post
     # 템플릿 -> post_detail.html이 자동으로 불려짐
-
+    # 전달되는 매개변수: 모델명 -> post
 """ FBV """
 #def index(request):
 #    posts = Post.objects.all().order_by('-pk')     # 모든 post를 가져옴, pk기준으로 최신순으로 정렬(내림차순)
