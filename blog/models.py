@@ -5,8 +5,12 @@ class Post(models.Model):
     title = models.CharField(max_length=30)      # 제목은 문자열 30
     content = models.TextField()                 # 본문
 
+    # 이미지 업도르
     head_image = models.ImageField(upload_to='blog/images/%Y/%m/%d/', blank=True)   # 이미지 저장 경로, 필수는 아님
     # %Y: 2022, %y: 22
+
+    # 파일 업로드
+    file_upload = models.FileField(upload_to='blog/files/%Y/%m/%d/', blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)          # 포스트 생성 날짜
     updated_at = models.DateTimeField(auto_now=True)              # 포스트 수정 날짜
