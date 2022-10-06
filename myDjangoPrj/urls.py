@@ -15,10 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.conf import settings
+from django.conf.urls.static import static
 # url과 view를 매핑
+
 urlpatterns = [
     path('admin/', admin.site.urls),  # -> IP주소/admin
     path('blog/', include('blog.urls')),
     path('', include('single_pages.urls'))    # 대문, about_me 페이지
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
