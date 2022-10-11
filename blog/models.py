@@ -1,11 +1,14 @@
+import os
+
 from django.db import models
 
 # Create your models here.
 class Post(models.Model):
     title = models.CharField(max_length=30)      # 제목은 문자열 30
+    hook_text = models.CharField(max_length=100, blank=True)   # 미리보기 텍스트
     content = models.TextField()                 # 본문
 
-    # 이미지 업도르
+    # 이미지 업로드
     head_image = models.ImageField(upload_to='blog/images/%Y/%m/%d/', blank=True)   # 이미지 저장 경로, 필수는 아님
     # %Y: 2022, %y: 22
 
@@ -23,3 +26,11 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return f'/blog/{self.pk}/'       # 블로그 게시물의 url
+
+    # 업로드한 파일의 이름
+    def get_file_name(self):
+        return os.path.basename(self.file_upload.name)
+
+    # 파일의 확장자를 가져와서 파일 종류를 아이콘으로 표시하는 데에 사용
+    def get_file_ext(self):
+        return self.get_file_name().split('.')[-1]   # 가장 마지막 원소: 확장자

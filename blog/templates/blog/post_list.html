@@ -90,12 +90,15 @@
                     <a href="{{p.get_absolute_url}}"><img class="card-img-top" src="https://picsum.photos/seed/{{p.pk}}/800/200" alt="random image" /></a>
                     {% endif %}
                     <div class="card-body">
-                        <h2 class="card-title">{{p.title}}</h2>
-                        <p class="card-text">{{p.content}}</p>
+                        <h2 class="card-title">{{p.title | upper}}</h2>  <!-- 템플릿 필터: upper 영어의 경우 대문자로-->
+                        {% if p.hook_text %}
+                        <h5 class="text-muted"> {{p.hook_text}} </h5>
+                        {% endif %}
+                        <p class="card-text">{{p.content | truncatechars:100}}</p>   <!-- 미리보기 100글자 -->
                         <a class="btn btn-primary" href="{{p.get_absolute_url}}">Read more →</a>
                     </div>
                     <div class="card-footer">
-                        <div class="small text-muted">{{p.created_at}}</div>
+                        <div class="small text-muted">{{p.created_at | date:"Y-m-d h:m:s"}}</div>
                         <a href="#">작성자(추후 개발 예정)</a>
                     </div>
                 </div>
