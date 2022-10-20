@@ -1,5 +1,5 @@
 import os
-
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
@@ -19,10 +19,11 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)              # 포스트 수정 날짜
 
     # author는 나중에
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
     # pk는 자동으로 만들어짐
     def __str__(self):
-        return f'[{self.pk}]{self.title}     {self.created_at}'
+        return f'[{self.pk}]{self.title}::{self.author} : {self.created_at}'
 
     def get_absolute_url(self):
         return f'/blog/{self.pk}/'       # 블로그 게시물의 url
