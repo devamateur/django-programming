@@ -3,6 +3,18 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
+class Category(models.Model):
+    name = models.CharField(max_length=50, unique=True)   # 카테고리는 unique해야 함
+    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
+
+    def __str__(self):  # 객체에 대한 문자열 리턴
+        return self.name
+
+    def get_absolute_url(self):
+        return f'/blog/category/{self.slug}/'
+
+    class Meta:   # verbose_name_plural은 예약어
+        verbose_name_plural = 'Categories'   # admin페이지의 Categorys대신 들어감
 class Post(models.Model):
     title = models.CharField(max_length=30)      # 제목은 문자열 30
     hook_text = models.CharField(max_length=100, blank=True)   # 미리보기 텍스트
@@ -20,6 +32,10 @@ class Post(models.Model):
 
     # author는 나중에
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+
+    # ForeignKey: 다대일 관계 표현
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
+
 
     # pk는 자동으로 만들어짐
     def __str__(self):

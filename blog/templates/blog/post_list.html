@@ -1,21 +1,39 @@
 {% extends 'blog/base.html' %}
 
 {% block main_area %}
+                <h2>Blog
+                    {% if category %}
+                    : <span class="badge badge-warning">{{category}}</span>
+                    {% endif %}
+                </h2>
                 <!-- Featured blog post-->
                 {% if post_list.exists %}
                     {% for p in post_list %}  <!-- 템플릿 문법 -->
-                    <div class="card mb-4">
+                    <div class="card mb-4" id="post-{{p.pk}}">
                         {% if p.head_image %}  <!-- 이미지가 있으면 -->
                         <a href="{{p.get_absolute_url}}"><img class="card-img-top" src="{{p.head_image.url}}" alt="{{p}}의 head_image" /></a>
                         {% else %}   <!-- 이미지가 없으면 랜덤 이미지 출력 -->
                         <a href="{{p.get_absolute_url}}"><img class="card-img-top" src="https://picsum.photos/seed/{{p.pk}}/800/200" alt="random image" /></a>
                         {% endif %}
                         <div class="card-body">
+                            {% if p.category %}
+                                <span class="badge badge-warning float-right">
+                                    <a href="{{p.category.get_absolute_url}}">
+                                        {{p.category}}
+                                    </a>
+                                </span>
+                            {% else %}
+                                <span class="badge badge-warning float-right">
+                                    <a href="/blog/category/no_category/">
+                                        미분류
+                                    </a>
+                                </span>
+                            {% endif %}
                             <h2 class="card-title">{{p.title | upper}}</h2>  <!-- 템플릿 필터: upper 영어의 경우 대문자로-->
                             {% if p.hook_text %}
                             <h5 class="text-muted"> {{p.hook_text}} </h5>
                             {% endif %}
-                            <p class="card-text">{{p.content | truncatechars:100}}</p>   <!-- 미리보기 100글자 -->
+                            <p class="card-text">{{p.content | truncatechars:100}}</p>   <!-- 미리보기 100문자 -->
                             <a class="btn btn-primary" href="{{p.get_absolute_url}}">Read more →</a>
                         </div>
                         <div class="card-footer">
