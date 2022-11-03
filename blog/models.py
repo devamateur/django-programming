@@ -2,7 +2,18 @@ import os
 from django.contrib.auth.models import User
 from django.db import models
 
-# Create your models here.
+# 다대다 관계 - Tag
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return f'/blog/tag/{self.slug}/'
+
+# 다대일 관계 - Category
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)   # 카테고리는 unique해야 함
     slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
@@ -35,7 +46,7 @@ class Post(models.Model):
 
     # ForeignKey: 다대일 관계 표현
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
-
+    tags = models.ManyToManyField(Tag, blank=True)
 
     # pk는 자동으로 만들어짐
     def __str__(self):
