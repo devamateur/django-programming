@@ -1,10 +1,35 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
-from django.views.generic import ListView, DetailView
-
+from django.views.generic import ListView, DetailView, CreateView
 from .models import Post, Category, Tag
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
+class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Post
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
+
+    # 모델명_form.html이 자동으로 호출
+
+    # 슈퍼유저 or 스태프유저에게 접근권한 부여(모델에 대한)
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+    def form_valid(self, form):
+        current_user = self.request.user            # 현재 post를 생성하는 유저
+        if current_user.is_authenticated and \
+                (current_user.is_superuser or self.request.user.is_staff):            # 해당 유저가 인증된 유저이면
+            form.instance.author = current_user     # 폼의 authorm를 해당 유저로
+            return super(PostCreate, self).form_valid(form)
+        else:
+            return redirect('/blog/')        #인증되지 않은 사용자일 경우 그냥 redirect
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(PostCreate, self).get_context_data()
+        context['categories'] = Category.objects.all()
+        context['no_category_post_count'] = Post.objects.filter(category=None).count
+
+        return context
 class PostList(ListView):
     model = Post
     ordering = '-pk'   # pk로 내림차순으로 정렬(최신순)

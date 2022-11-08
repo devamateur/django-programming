@@ -6,6 +6,7 @@ urlpatterns = [   # IP주소/blog/
     ### CBV(Class Based View)  이용
     path('', views.PostList.as_view()),
     path('<int:pk>/', views.PostDetail.as_view()),
+    path('create_post/', views.PostCreate.as_view()),
     path('category/<str:slug>/', views.category_page),    # IP주소/blog/category/slug/
 
     # IP주소/blog/tag/slug/
