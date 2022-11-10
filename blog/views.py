@@ -1,10 +1,32 @@
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from .models import Post, Category, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 
+# 포스트 수정을 위한 클래스
+class PostUpdate(LoginRequiredMixin, UpdateView):
+    model = Post
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category', 'tags']
+    template_name = 'blog/post_update_form.html'      # 템플릿을 호출
+
+    # 포스트를 작성한 유저 확인
+    def dispatch(self, request, *args, **kwargs):
+        # request 유저와 post를 작성한 유저가 같은지 확인
+        if request.user.is_authenticated and request.user == self.get_object().author:
+            return super(PostUpdate, self).dispatch(request, *args, **kwargs)
+        else:
+            raise PermissionDenied          # PermissionDenied exception 발생시킴
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(PostUpdate, self).get_context_data()
+        context['categories'] = Category.objects.all()
+        context['no_category_post_count'] = Post.objects.filter(category=None).count
+
+        return context
+# 포스트 생성을 위한 클래스
 class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post
     fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
