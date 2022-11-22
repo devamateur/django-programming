@@ -6,6 +6,8 @@ from .models import Post, Category, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.utils.text import slugify
+from .forms import CommentForm
+from django.shortcuts import get_object_or_404
 
 # 포스트 수정을 위한 클래스
 class PostUpdate(LoginRequiredMixin, UpdateView):
@@ -114,10 +116,27 @@ class PostDetail(DetailView):
         context = super(PostDetail, self).get_context_data()
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count
-
+        context['comment_form'] = CommentForm
         return context
     # 템플릿 -> post_detail.html이 자동으로 불려짐
     # 전달되는 매개변수: 모델명 -> post
+
+# 댓글 등록하는 메소드
+def new_comment(request, pk):
+    if request.user.is_authenticated:       # 로그인한 유저인가
+        post = get_object_or_404(Post, pk=pk)       # 해당 댓글이 달린 포스트 가져옴
+        if request.method == 'POST':                # 새로 댓글을 작성하는 경우
+            comment_form = CommentForm(request.POST)        # POST로 전달받은 내용
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)   # 모델에 등록(commit)은 하지 않음
+                comment.post = post
+                comment.author = request.user
+                comment.save()              # 모델에 등록
+                return redirect(comment.get_absolute_url())
+        else:   # request.method == 'GET'인 경우
+            return redirect(post.get_absolute_url())
+    else:       # 로그인하지 않은 유저인 경우
+        raise PermissionDenied
 
 def category_page(request, slug):
     if slug == 'no_category':
