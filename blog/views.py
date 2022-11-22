@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.utils.text import slugify
@@ -137,6 +137,23 @@ def new_comment(request, pk):
             return redirect(post.get_absolute_url())
     else:       # 로그인하지 않은 유저인 경우
         raise PermissionDenied
+
+# 댓글 수정을 위한 뷰
+class CommentUpdate(LoginRequiredMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    # 템플릿 이름: comment_form
+    template_name = 'blog/comment_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # request 유저와 comment를 작성한 유저가 같은지 확인
+        if request.user.is_authenticated and request.user == self.get_object().author:
+            return super(CommentUpdate, self).dispatch(request, *args, **kwargs)
+        else:
+            raise PermissionDenied          # PermissionDenied exception 발생시킴
+
+    # 템플릿 이름: comment_form
+
 
 def category_page(request, slug):
     if slug == 'no_category':
