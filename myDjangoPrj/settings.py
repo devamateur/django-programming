@@ -39,9 +39,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'blog',       # 앱 연결
     'single_pages'
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+)
+
+SITE_ID = 1
+ACCOUNT_EMAIL_REQUIRED = True       # 이메일은 필수
+ACCOUNT_EMAIL_VERIFICATION = 'none' # 따로 이메일 검증은 하지 않음
+LOGIN_REDIRECT_URL = '/blog/'       # 로그인한 뒤 post 목록 페이지로 리다이렉트
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
