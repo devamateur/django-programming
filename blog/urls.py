@@ -12,8 +12,8 @@ urlpatterns = [   # IP주소/blog/
     path('create_post/', views.PostCreate.as_view()),
     path('category/<str:slug>/', views.category_page),    # IP주소/blog/category/slug/
 
-    # IP주소/blog/tag/slug/
-    path('tag/<str:slug>/', views.tag_page),
+    path('tag/<str:slug>/', views.tag_page),                # IP주소/blog/tag/slug/
+    path('search/<str:q>/', views.PostSearch.as_view()),
 
     ### FBV(Function Based View) 이용
     #path('', views.index),    # IP주소/blog/

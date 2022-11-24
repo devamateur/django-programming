@@ -8,6 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.text import slugify
 from .forms import CommentForm
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 # 포스트 수정을 위한 클래스
 class PostUpdate(LoginRequiredMixin, UpdateView):
@@ -95,6 +96,7 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         context['no_category_post_count'] = Post.objects.filter(category=None).count
 
         return context
+
 class PostList(ListView):
     model = Post
     ordering = '-pk'   # pk로 내림차순으로 정렬(최신순)
@@ -110,6 +112,26 @@ class PostList(ListView):
 
     # 템플릿은 모델명_list.html이 자동으로 불려짐 -> post_list.html
     # 전달되는 매개변수(FBV render() 세 번째 매개변수): 모델명_list -> post_list
+
+
+class PostSearch(PostList):  # ListView 상속, post_list, post_list.html
+    paginate_by = None
+
+    def get_queryset(self):
+        q = self.kwargs['q']            # 검색어(query)를 가져 옴
+
+        # 포스트 제목과 태그에 대해 검색
+        post_list = Post.objects.filter(Q(title__contains=q) | Q(tags__name__contains=q)).distinct()
+
+        return post_list
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(PostSearch, self).get_context_data()
+        q = self.kwargs['q']
+        context['search_info'] = f'Search: {q} ({self.get_queryset().count()})'
+
+        return context
+
 class PostDetail(DetailView):
     model = Post
 
