@@ -62,6 +62,13 @@ class Post(models.Model):
     # 파일의 확장자를 가져와서 파일 종류를 아이콘으로 표시하는 데에 사용
     def get_file_ext(self):
         return self.get_file_name().split('.')[-1]   # 가장 마지막 원소: 확장자
+    def get_avatar_url(self):
+
+        # 소셜 로그인한 유저의 경우
+        if self.author.socialaccount_set.exists():
+            return self.author.socialaccount_set.first().get_avatar_url()        # 구글 아바타를 가져옴
+        else:
+            return 'https://dummyimage.com/50x50/ced4da/6c757d.jpg'
 
 # 댓글
 class Comment(models.Model):
