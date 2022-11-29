@@ -24,6 +24,11 @@
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% if user.socialaccount_set.all.0.get_avatar_url %}   <!-- all.0(=first): 전체 중 제일 앞(0번째)-->
+                                <img class="rounded-circle mr-3" src="{{user.socialaccount_set.all.0.get_avatar_url}}" width="25px"/>
+                            {% else %}
+                                <img class="rounded-circle mr-3" src="httpsL//dummyimage.com/50x50/ced4da/6c757d.jpg" width="25px"/>
+                            {% endif %}
                             {{user.username}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">

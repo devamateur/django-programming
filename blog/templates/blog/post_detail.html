@@ -95,7 +95,7 @@
                                 {% for comment in post.comment_set.iterator %}
                                 <!-- Single comment-->
                                 <div class="media d-flex" id="comment-{{comment.pk}}">
-                                    <img class="rounded-circle mr-3" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." />
+                                    <img class="rounded-circle mr-3" src="{{comment.get_avatar_url}}" alt="{{comment.author}}" width="60px" />
                                     <div class="media-body ms-3">
                                         <!-- 해당 댓글을 작성한 사용자에게만 수정 권한 부여 -->
                                         {% if user.is_authenticated and comment.author == user%}
