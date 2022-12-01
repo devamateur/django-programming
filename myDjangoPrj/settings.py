@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-#2+%n+h94u-76tn@!v(i4e^=(iow&bt6!*j+e2gxaydea-8&vw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# 로컬 pc IP 주소 - 서버 구동: python manage.py runserver IP주소:8000
+#ALLOWED_HOSTS = ['10.208.2.161']
 ALLOWED_HOSTS = []
 
 
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'crispy_forms',
     'allauth',
     'allauth.account',

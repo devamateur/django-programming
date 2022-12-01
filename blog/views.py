@@ -9,6 +9,24 @@ from django.utils.text import slugify
 from .forms import CommentForm
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from rest_framework import viewsets
+from .serializers import postSerializer
+
+class postViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = postSerializer
+
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    post = comment.post
+
+    # 인증된 사용자인지
+    if request.user.is_authenticated and request.user == comment.author:
+        comment.delete()        # 댓글 삭제
+        return redirect(post.get_absolute_url)
+
+    else:
+        PermissionDenied
 
 # 포스트 수정을 위한 클래스
 class PostUpdate(LoginRequiredMixin, UpdateView):
