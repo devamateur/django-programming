@@ -23,7 +23,7 @@ def delete_comment(request, pk):
     # 인증된 사용자인지
     if request.user.is_authenticated and request.user == comment.author:
         comment.delete()        # 댓글 삭제
-        return redirect(post.get_absolute_url)
+        return redirect(post.get_absolute_url())
 
     else:
         PermissionDenied
